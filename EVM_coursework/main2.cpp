@@ -3,17 +3,23 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
-
 #define N 3
-
 using namespace std;
 
+struct States {
+	//процессор
+	string pr_reg = "__/РЕГ\\_";      //работа с регистром
+	string pr_wait = "_[ожП0]_";    //начало ожидания
+	string pr_memory = "_/ПАМ0\\_";    //начало работы с памятью
+	// шина
+	string bus_none = "________";     //ничего
+	string bus_memory = "_/П0П0\\_";   //начало работы с памятью
+} st;
 struct Element {
 	int proc;				// процессор
 	int mem;				// память
 	Element* prev;		// указатель на предыдущий элемент
 };
-
 class Queue {
 private:
 	int size;			// кол-во элементов в очереди 
@@ -22,9 +28,9 @@ private:
 public:
 	Queue() { size = 0; };	// конструктор, обнуляет начение size
 	~Queue() { clear(); };	// деструктор
-	void push(int, int);
-	void pop();
-	void clear();
+	void push(int, int);	// добавление элемента очереди
+	void pop();				// извлечение элемента очереди
+	void clear();			// очищение очереди
 	int find_proc(int);
 	int find_mem(int);
 	int isEmpty() { if (size == 0) return 1; else return 0; }
@@ -32,7 +38,7 @@ public:
 	int getSize() { return this->size; };
 	Element* getEnd() { return this->end; };
 	int getFirst() {
-		Element* e = end;		// установка указателя e на конец очереди end
+		Element* e = end;						// установка указателя e на конец очереди end
 		int first;
 		for (int i = 0; i < size - 1; i++) {	// если в очереди больше 1 элемента
 			e = e->prev;						// переменной е передается значение предыдущего указателя, движение по очереди
@@ -51,7 +57,6 @@ public:
 	}
 };
 
-//Добавление элемента очереди программой (с передачей аргумента)
 void Queue::push(int _proc, int _mem) {
 
 	Element* e = new Element;	// объявление указателя для нового элементa типа Element
@@ -64,64 +69,53 @@ void Queue::push(int _proc, int _mem) {
 	end = e;					// указатель на конец очереди начинает указывать на элемент е, тк он теперь последний
 	this->size++;				// увеличение размера очереди
 }
-
-// Извлечение элемента очереди
 void Queue::pop() {
 	Element* e = end;		// установка указателя e на конец очереди end
-	//int a;					// создание переменной
 	if (this->size == 0) {	// если нет элементов в очереди
 		cout << "none" << endl;
 	}
 	else {
 		if (this->size == 1) {	// если один элемент
-			//a = end->proc;			// передача значения конца очереди в переменную
 			this->size--;		// уменьшение размера очереди
 			delete end;			// удаление указателя на конец очереди
-			//cout << proc /*<< endl << "none" << endl*/;
 		}
 		else {
 			for (int i = 0; i < size - 2; i++) {	// если в очереди больше 1 элемента
 				e = e->prev;						// переменной е передается значение предыдущего указателя, движение по очереди
 			}
-			//a = e->prev->proc;			// в значение а записывается значение головы
 			delete e->prev;			// удаление головы
 			this->size--;			// уменьшение размера очереди
-			//cout << proc << endl;;
 		}
 	}
 }
-
-// Очищение очереди
-void Queue::clear() {			// просмотр элементов с хвоста до головы, удаление элементов от головы по порядку	
-	Element* e = end;			// установка указателя на конец очереди
+void Queue::clear() {				// просмотр элементов с хвоста до головы, удаление элементов от головы по порядку	
+	Element* e = end;				// установка указателя на конец очереди
 	for (int i = 0; i < size; i++) {	//очередь не пустая
-		e = end;				// указатель на конец очереди
+		e = end;					// указатель на конец очереди
 		for (int j = 0; j < size - i - 1; j++) {
-			e = e->prev;		// просмотр элементов с конца очереди до начала
+			e = e->prev;			// просмотр элементов с конца очереди до начала
 		}
-		delete e;				// удаление элемента очереди
+		delete e;					// удаление элемента очереди
 	}
 	size = 0;
 	end = NULL;
 }
-
 int Queue::find_proc(int find) {
-	Element* e = end;		// установка указателя e на конец очереди end
+	Element* e = end;						// установка указателя e на конец очереди end
 	for (int i = 0; i < size - 1; i++) {	// если в очереди больше 1 элемента
 		if (e->proc == find) 
 			return 1;
 		else
-			e = e->prev;						// переменной е передается значение предыдущего указателя, движение по очереди
+			e = e->prev;					// переменной е передается значение предыдущего указателя, движение по очереди
 	}
 	return 0;
 }
-
 int Queue::find_mem(int find) {
-	Element* e = end;		// установка указателя e на конец очереди end
+	Element* e = end;						// установка указателя e на конец очереди end
 	for (int i = 0; i < size - 1; i++) {	// если в очереди больше 1 элемента
 		if (e->proc == find) return e->mem;
 		else
-			e = e->prev;						// переменной е передается значение предыдущего указателя, движение по очереди
+			e = e->prev;					// переменной е передается значение предыдущего указателя, движение по очереди
 	}
 	return -1;
 }
@@ -166,16 +160,15 @@ int main() {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 	srand(time(NULL));
-	//int N_work = -1;
+
 	int mem = -1;
-	int T = -1;		//счётчик тактов
-	int T_stop = -1;		//последний такт работы
+	int T = -1;			//счётчик тактов
+	int T_stop = -1;	//последний такт работы
 	int T_free = -1;
 	int Pn = 100;		//вероятность обращения к соответсвующему блоку памяти
 	int Kr = 100;		//вероятность обращения к регистрам
-	int M;			//время доступа к памяти
+	int M;				//время доступа к памяти
 	string str = "";
-	//int buf = -1;
 
 	cout << "Кол-во процессоров и блоков памяти N = " << N << endl;
 	cout << "Время обращения к памяти M = ";
@@ -192,6 +185,13 @@ int main() {
 	T_stop = stoi(checkNumber(str));
 	str.clear();
 
+	string status [5][100];
+	status[0][0] = "T";
+	status[1][0] = "ПР1";
+	status[2][0] = "ПР2";
+	status[3][0] = "ПР3";
+	status[4][0] = "ШИНА";
+
 	cout << endl;
 	cout.width(8);
 	cout << "T |";
@@ -202,106 +202,129 @@ int main() {
 	cout.width(8);
 	cout << "ПР3 |";
 	cout << endl;
-	for (int i = 0; i < 33; i++) {
-		cout << "—";
-	}
+	for (int i = 0; i < 33; i++) {cout << "—";}
 	cout << endl;
 
 	for (T = 1; T < T_stop+1; T++) {
+
+		status[0][T] = to_string(T);
+
 		str += to_string(T);
 		str += " |";
 		cout.width(8);
 		cout << str;
 		str.clear();
 		cout << str;
-		//cout << T << " |";
 		int K, P;
-		if (T >= T_free) 
-			T_free = -1;
+		if (T >= T_free) T_free = -1;
 		for (int numb = 1; numb < N+1; numb++) {
-			if (numb == /*N_work*/ q_bus.getFirst() /*&& T_free <0*/) {
+			if (numb == q_bus.getFirst()) {
+
+				str = st.pr_memory;
+				str[5] = q_bus.getMem() + 48;
+				status[numb][T] = str;
+				str.clear();
+
 				str += "ПАМ";
 				str += to_string(q_bus.getMem());
 				str += "  ";
-				cout.width(8); 
-				cout << str;
+				cout.width(8); cout << str; str.clear();
+
+				str = st.bus_memory;
+				str[3] = numb + 48;
+				str[5] = q_bus.getMem() + 48;
+				status[4][T] = str;
 				str.clear();
-				//cout.width(8); cout << "ПАМ " << q_bus.getMem();
-				//q_bus.pop();
 			}
 			else
 				if (q_bus.find_proc(numb)) { 
+
+					str = st.pr_wait;
+					str[5] = q_bus.find_mem(numb) + 48;
+					status[numb][T] = str;
+					str.clear();
+
 					str += "ОЖ";
 					str += to_string(q_bus.find_mem(numb));
 					str += "  ";
-					cout.width(8);
-					cout << str;
-					str.clear();
+					cout.width(8); cout << str; str.clear();
 				}
-				else
-				{
-					//обращение к регистру
-					
+				else {					
 					K = (rand() % 100 + 1);
-					//cout << K;
-					if (K < Kr) {
-						str += "РГ  ";
-						cout.width(8); 
-						cout << str;
+					if (K < Kr) {				//обращение к регистру
+
+						status[numb][T] = st.pr_reg;
 						str.clear();
-						//cout << "РГ  ";
+
+						str += "РГ  ";
+						cout.width(8); cout << str; str.clear();
 					}
 					else {
-						
 						P = (rand() % 100 + 1);
-						//обращение к соответствующему блоку памяти
-						if (P < Pn) mem = numb;
-						//обращение к другому блоку памяти
-						else {
-							//srand(time(NULL));
-							do {
-								//srand(time(NULL));
-								mem = (rand() % 3 + 1);
+						if (P < Pn) mem = numb;		//обращение к соответствующему блоку памяти
+						else {						//обращение к другому блоку памяти
+							do { mem = (rand() % 3 + 1);
 							} while (mem == numb);
 						}
-						//занятость шины
-						if (q_bus.isEmpty() && (T_free < 0 || T >= T_free)) {
-							//N_work = numb;
+						if (q_bus.isEmpty() && (T_free < 0 || T >= T_free)) {	//занятость шины
 							T_free = T + M;
-							for (int i = 0; i < M; i++) {
-								q_bus.push(numb, mem);
-							}
+							for (int i = 0; i < M; i++) { q_bus.push(numb, mem); }
+
+							str = st.pr_memory;
+							str[5] = q_bus.find_mem(numb) + 48;
+							status[numb][T] = str;
+							str.clear();
+
+							str = st.bus_memory;
+							str[3] = numb + 48;
+							str[5] = q_bus.find_mem(numb) + 48;
+							status[4][T] = str;
+							str.clear();
+
 							str += "ПАМ";
 							str += to_string(q_bus.find_mem(numb));
 							str += "  ";
-							cout.width(8); 
-							cout << str;
-							str.clear();
-							//cout << "ПАМ " << q_bus.find_mem(numb);
-							//q_bus.pop();
+							cout.width(8); cout << str; str.clear();
 						}
 						else {
-							
-							for (int i = 0; i < M; i++) {
-								q_bus.push(numb, mem);
-							}
+							for (int i = 0; i < M; i++) { q_bus.push(numb, mem); }
+
+							str = st.pr_wait;
+							str[5] = q_bus.find_mem(numb) + 48;
+							status[numb][T] = str;
+							str.clear();
+
 							str += "ОЖ";
 							str += to_string(q_bus.find_mem(numb));
 							str += "  ";
-							cout.width(8); 
-							cout << str;
-							str.clear();
-							//cout << "ОЖ " << q_bus.find_mem(numb);
+							cout.width(8); cout << str; str.clear();
 						}
-						//else { cout.width(8); cout << "Mem " << mem; }
 					}
 				}
-			
 		}
-		if (!q_bus.isEmpty())
-			q_bus.pop();
+		if (!q_bus.isEmpty()) q_bus.pop();
+		if (status[4][T].empty()) {
+			status[4][T] = st.bus_none;
+			str.clear();
+		}
 		cout << endl;
 	}
+	cout << endl << endl;
+	cout << "<- Растяните окно ->" << endl << endl;
 
+	cout.width(8);
+	cout << status[0][0] << " | ";
+	for (int j = 1; j < T; j++) { cout.width(7); cout << status[0][j]<<"|"; }
+	cout << endl;
+
+	for (int j = 1; j < ((T - 1) * 8) + 11; j++) { cout << "—"; }
+	cout << endl << endl;
+
+	for (int i = 1; i < 5; i++) {
+		cout.width(8);
+		cout << status[i][0] << " | ";
+		for (int j = 1; j < T; j++) {cout.width(8);	cout << status[i][j];}
+		cout << endl << endl;
+	}
 	return 0;
 }
