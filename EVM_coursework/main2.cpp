@@ -168,53 +168,76 @@ int main() {
 	srand(time(NULL));
 	//int N_work = -1;
 	int mem = -1;
-	int T = 0;		//счётчик тактов
-	int T_stop = 0;		//последний такт работы
+	int T = -1;		//счётчик тактов
+	int T_stop = -1;		//последний такт работы
 	int T_free = -1;
 	int Pn = 100;		//вероятность обращения к соответсвующему блоку памяти
 	int Kr = 100;		//вероятность обращения к регистрам
 	int M;			//время доступа к памяти
+	string str = "";
+	//int buf = -1;
+
 	cout << "Кол-во процессоров и блоков памяти N = " << N << endl;
 	cout << "Время обращения к памяти M = ";
-	string M_str;
-	M_str = in(M_str);
-	M = stoi(checkNumber(M_str));
+	str = in(str);
+	M = stoi(checkNumber(str));
 	cout << "Pn = ";
-	string Pn_str;
-	Pn_str = in(Pn_str);
-	Pn = stoi(checkNumber(Pn_str));
+	str = in(str);
+	Pn = stoi(checkNumber(str));
 	cout << "Kr = ";
-	string Kr_str;
-	Kr_str = in(Kr_str);
-	Kr = stoi(checkNumber(Kr_str));
+	str = in(str);
+	Kr = stoi(checkNumber(str));
 	cout << "Задайте количество тактов для работы T_stop = ";
-	string T_stop_str;
-	T_stop_str = in(T_stop_str);
-	T_stop = stoi(checkNumber(T_stop_str));
+	str = in(str);
+	T_stop = stoi(checkNumber(str));
+	str.clear();
 
+	cout << endl;
 	cout.width(8);
-	cout << "T" << " |";
+	cout << "T |";
 	cout.width(8);
-	cout << "ПР1" << " |";
+	cout << "ПР1 |";
 	cout.width(8);
-	cout << "ПР2" << " |";
+	cout << "ПР2 |";
 	cout.width(8);
-	cout << "ПР3" << " |";
+	cout << "ПР3 |";
+	cout << endl;
+	for (int i = 0; i < 33; i++) {
+		cout << "—";
+	}
 	cout << endl;
 
-	for (int T = 0; T < T_stop; T++) {
+	for (T = 1; T < T_stop+1; T++) {
+		str += to_string(T);
+		str += " |";
 		cout.width(8);
-		cout << T << " |";
+		cout << str;
+		str.clear();
+		cout << str;
+		//cout << T << " |";
 		int K, P;
 		if (T >= T_free) 
 			T_free = -1;
-		for (int numb = 0; numb < N; numb++) {
+		for (int numb = 1; numb < N+1; numb++) {
 			if (numb == /*N_work*/ q_bus.getFirst() /*&& T_free <0*/) {
-				cout.width(8); cout << "Mem " << q_bus.getMem();
+				str += "ПАМ";
+				str += to_string(q_bus.getMem());
+				str += "  ";
+				cout.width(8); 
+				cout << str;
+				str.clear();
+				//cout.width(8); cout << "ПАМ " << q_bus.getMem();
 				//q_bus.pop();
 			}
 			else
-				if (q_bus.find_proc(numb)) { cout.width(8); cout << "Wait " << q_bus.find_mem(numb); }
+				if (q_bus.find_proc(numb)) { 
+					str += "ОЖ";
+					str += to_string(q_bus.find_mem(numb));
+					str += "  ";
+					cout.width(8);
+					cout << str;
+					str.clear();
+				}
 				else
 				{
 					//обращение к регистру
@@ -222,8 +245,11 @@ int main() {
 					K = (rand() % 100 + 1);
 					//cout << K;
 					if (K < Kr) {
-						cout.width(10);
-						cout << "Reg  ";
+						str += "РГ  ";
+						cout.width(8); 
+						cout << str;
+						str.clear();
+						//cout << "РГ  ";
 					}
 					else {
 						
@@ -235,7 +261,7 @@ int main() {
 							//srand(time(NULL));
 							do {
 								//srand(time(NULL));
-								mem = rand() % 3;
+								mem = (rand() % 3 + 1);
 							} while (mem == numb);
 						}
 						//занятость шины
@@ -245,8 +271,13 @@ int main() {
 							for (int i = 0; i < M; i++) {
 								q_bus.push(numb, mem);
 							}
-							cout.width(8);
-							cout << "Mem " << q_bus.find_mem(numb);
+							str += "ПАМ";
+							str += to_string(q_bus.find_mem(numb));
+							str += "  ";
+							cout.width(8); 
+							cout << str;
+							str.clear();
+							//cout << "ПАМ " << q_bus.find_mem(numb);
 							//q_bus.pop();
 						}
 						else {
@@ -254,8 +285,13 @@ int main() {
 							for (int i = 0; i < M; i++) {
 								q_bus.push(numb, mem);
 							}
-							cout.width(8);
-							cout << "Wait " << q_bus.find_mem(numb);
+							str += "ОЖ";
+							str += to_string(q_bus.find_mem(numb));
+							str += "  ";
+							cout.width(8); 
+							cout << str;
+							str.clear();
+							//cout << "ОЖ " << q_bus.find_mem(numb);
 						}
 						//else { cout.width(8); cout << "Mem " << mem; }
 					}
