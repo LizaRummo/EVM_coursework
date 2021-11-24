@@ -43,8 +43,9 @@ public:
 		for (int i = 0; i < size - 1; i++) {	// если в очереди больше 1 элемента
 			e = e->prev;						// переменной е передается значение предыдущего указателя, движение по очереди
 		}
-		if (e != NULL) { first = e->proc; return first; }
-		else return -1;
+		if (e != NULL) { 
+			first = e->proc; return first; }
+		else return 0;
 	}
 	int getMem() {
 		Element* e = end;		// установка указателя e на конец очереди end
@@ -112,12 +113,13 @@ int Queue::find_proc(int find) {
 }
 int Queue::find_mem(int find) {
 	Element* e = end;						// установка указателя e на конец очереди end
-	for (int i = 0; i < size - 1; i++) {	// если в очереди больше 1 элемента
-		if (e->proc == find) return e->mem;
+	for (int i = 0; i < size /*- 1*/; i++) {	// если в очереди больше 1 элемента
+		if (e->proc == find) 
+			return e->mem;
 		else
 			e = e->prev;					// переменной е передается значение предыдущего указателя, движение по очереди
 	}
-	return -1;
+	return 0;
 }
 
 string in(string str) {
@@ -219,13 +221,27 @@ int main() {
 		int K, P;
 		if (T >= T_free) T_free = -1;
 		for (int numb = 1; numb < N + 1; numb++) {
-			if ((numb == q_switch[1].getFirst())||(numb == q_switch[2].getFirst())||(numb == q_switch[3].getFirst())) {
+			if (((numb == q_switch[1].getFirst())&& (q_switch[1].find_mem(numb)!=0)) ||((numb == q_switch[2].getFirst())&& (q_switch[2].find_mem(numb)!=0)) ||((numb == q_switch[3].getFirst())&& (q_switch[3].find_mem(numb)!=0))) {
 
 				str += "ПАМ";
-
-				if (numb == q_switch[1].getFirst()) { str += to_string(1); }
-				else if (numb == q_switch[2].getFirst()) { str += to_string(2); }
-				else if (numb == q_switch[3].getFirst()) { str += to_string(3); }
+				if ((numb == q_switch[1].getFirst()) && (q_switch[1].find_mem(numb) != 0)) {
+					str += to_string(q_switch[1].find_mem(numb));
+					//str += to_string(q_switch[1].getFirst());
+					//str += to_string(1); 
+				}
+				else {
+					if ((numb == q_switch[2].getFirst()) && (q_switch[2].find_mem(numb) != 0)) {
+						str += to_string(q_switch[2].find_mem(numb));
+						//str += to_string(q_switch[2].getFirst());
+						//str += to_string(2);
+					}
+					else
+						if ((numb == q_switch[3].getFirst()) && (q_switch[3].find_mem(numb) != 0)) {
+							str += to_string(q_switch[3].find_mem(numb));
+							//str += to_string(q_switch[3].getFirst());
+							//str += to_string(3);
+						}
+				}
 
 				//str = st.pr_memory;
 				//str[5] = q_bus.getMem() + 48;
@@ -246,9 +262,12 @@ int main() {
 					//ошибка повторного ожидания, выводит первую найденную запись очереди
 					str += "ОЖ";
 
-					if (q_switch[1].find_mem(numb)) { str += to_string(1); }
-					else if (q_switch[2].find_mem(numb)) { str += to_string(2); }
-					else if (q_switch[3].find_mem(numb)) { str += to_string(3); }
+					if (q_switch[1].find_mem(numb) > 0) {
+						str += to_string(1); }
+					else if (q_switch[2].find_mem(numb) > 0) {
+						str += to_string(2); }
+					else if (q_switch[3].find_mem(numb) > 0) {
+						str += to_string(3); }
 
 					//str = st.pr_wait;
 					//str[5] = q_bus.find_mem(numb) + 48;
@@ -298,6 +317,7 @@ int main() {
 							cout.width(8); cout << str; str.clear();
 						}
 						else {
+
 							for (int i = 0; i < M; i++) { q_switch[mem].push(numb, mem); }
 
 							//str = st.pr_wait;
