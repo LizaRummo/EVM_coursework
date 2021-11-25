@@ -38,21 +38,16 @@ public:
 	int getSize() { return this->size; };
 	Element* getEnd() { return this->end; };
 	int getFirst() {
-		Element* e = end;						// установка указателя e на конец очереди end
+		Element* e = end;						
 		int first;
-		for (int i = 0; i < size - 1; i++) {	// если в очереди больше 1 элемента
-			e = e->prev;						// переменной е передается значение предыдущего указателя, движение по очереди
-		}
-		if (e != NULL) { 
-			first = e->proc; return first; }
+		for (int i = 0; i < size - 1; i++) { e = e->prev; }
+		if (e != NULL) { first = e->proc; return first; }
 		else return 0;
 	}
 	int getMem() {
-		Element* e = end;		// установка указателя e на конец очереди end
+		Element* e = end;		
 		int _mem;
-		for (int i = 0; i < size - 1; i++) {	// если в очереди больше 1 элемента
-			e = e->prev;						// переменной е передается значение предыдущего указателя, движение по очереди
-		}
+		for (int i = 0; i < size - 1; i++) { e = e->prev; }
 		_mem = e->mem;
 		return _mem;
 	}
@@ -60,64 +55,50 @@ public:
 
 void Queue::push(int _proc, int _mem) {
 
-	Element* e = new Element;	// объявление указателя для нового элементa типа Element
+	Element* e = new Element;	
 	e->proc = _proc;
-	e->mem = _mem;				// в память по указателю кладем новое значение
-	e->prev = NULL;				// записывается нулевой указатель
-	if (size > 0) {
-		e->prev = end;			// последний элемент очереди становится предпослдним, тк у нас появился новый элемент, который стал последним
-	}
-	end = e;					// указатель на конец очереди начинает указывать на элемент е, тк он теперь последний
-	this->size++;				// увеличение размера очереди
+	e->mem = _mem;				
+	e->prev = NULL;				
+	if (size > 0) { e->prev = end; }
+	end = e;					
+	this->size++;				
 }
 void Queue::pop() {
-	Element* e = end;		// установка указателя e на конец очереди end
-	if (this->size == 0) {	// если нет элементов в очереди
-		cout << "none" << endl;
+	Element* e = end;		
+	if (this->size == 0) { cout << "none" << endl;
 	}
 	else {
-		if (this->size == 1) {	// если один элемент
-			this->size--;		// уменьшение размера очереди
-			delete end;			// удаление указателя на конец очереди
-		}
+		if (this->size == 1) { this->size--; delete end; }
 		else {
-			for (int i = 0; i < size - 2; i++) {	// если в очереди больше 1 элемента
-				e = e->prev;						// переменной е передается значение предыдущего указателя, движение по очереди
-			}
-			delete e->prev;			// удаление головы
-			this->size--;			// уменьшение размера очереди
+			for (int i = 0; i < size - 2; i++) { e = e->prev; }
+			delete e->prev;			
+			this->size--;			
 		}
 	}
 }
-void Queue::clear() {				// просмотр элементов с хвоста до головы, удаление элементов от головы по порядку	
-	Element* e = end;				// установка указателя на конец очереди
-	for (int i = 0; i < size; i++) {	//очередь не пустая
-		e = end;					// указатель на конец очереди
-		for (int j = 0; j < size - i - 1; j++) {
-			e = e->prev;			// просмотр элементов с конца очереди до начала
-		}
-		delete e;					// удаление элемента очереди
+void Queue::clear() {				
+	Element* e = end;				
+	for (int i = 0; i < size; i++) {	
+		e = end;					
+		for (int j = 0; j < size - i - 1; j++) { e = e->prev; }
+		delete e;					
 	}
 	size = 0;
 	end = NULL;
 }
 int Queue::find_proc(int find) {
-	Element* e = end;						// установка указателя e на конец очереди end
-	for (int i = 0; i < size - 1; i++) {	// если в очереди больше 1 элемента
-		if (e->proc == find)
-			return 1;
-		else
-			e = e->prev;					// переменной е передается значение предыдущего указателя, движение по очереди
+	Element* e = end;						
+	for (int i = 0; i < size - 1; i++) {
+		if (e->proc == find) return 1;
+		else e = e->prev;
 	}
 	return 0;
 }
 int Queue::find_mem(int find) {
-	Element* e = end;						// установка указателя e на конец очереди end
-	for (int i = 0; i < size /*- 1*/; i++) {	// если в очереди больше 1 элемента
-		if (e->proc == find) 
-			return e->mem;
-		else
-			e = e->prev;					// переменной е передается значение предыдущего указателя, движение по очереди
+	Element* e = end;						
+	for (int i = 0; i < size /*- 1*/; i++) {	
+		if (e->proc == find) return e->mem;
+		else e = e->prev;					
 	}
 	return 0;
 }
@@ -175,17 +156,13 @@ int main() {
 
 	cout << "Кол-во процессоров и блоков памяти N = " << N << endl;
 	cout << "Время обращения к памяти M = ";
-	str = in(str);
-	M = stoi(checkNumber(str));
+	str = in(str); M = stoi(checkNumber(str));
 	cout << "Pn = ";
-	str = in(str);
-	Pn = stoi(checkNumber(str));
+	str = in(str); Pn = stoi(checkNumber(str));
 	cout << "Kr = ";
-	str = in(str);
-	Kr = stoi(checkNumber(str));
+	str = in(str); Kr = stoi(checkNumber(str));
 	cout << "Задайте количество тактов для работы T_stop = ";
-	str = in(str);
-	T_stop = stoi(checkNumber(str));
+	str = in(str); T_stop = stoi(checkNumber(str));
 	str.clear();
 
 	//string status[N+2][100];
@@ -259,7 +236,7 @@ int main() {
 			}
 			else
 				if ((q_switch[1].find_proc(numb))||(q_switch[2].find_proc(numb))||(q_switch[3].find_proc(numb))) {
-					//ошибка повторного ожидания, выводит первую найденную запись очереди
+					
 					str += "ОЖ";
 
 					if (q_switch[1].find_mem(numb) > 0) {
