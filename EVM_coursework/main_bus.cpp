@@ -3,6 +3,9 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
+
+#include "Queue.h"
+
 #define N 3
 using namespace std;
 
@@ -15,110 +18,93 @@ struct States {
 	string bus_none = "________";     //íè÷åãî
 	string bus_memory = "_/Ï0Ï0\\_";   //íà÷àëî ðàáîòû ñ ïàìÿòüþ
 } st;
-struct Element {
-	int proc;				// ïðîöåññîð
-	int mem;				// ïàìÿòü
-	Element* prev;		// óêàçàòåëü íà ïðåäûäóùèé ýëåìåíò
-};
-class Queue {
-private:
-	int size;			// êîë-âî ýëåìåíòîâ â î÷åðåäè 
-	Element* end;		// óêàçàòåëü íà êîíåö î÷åðåäè
-
-public:
-	Queue() { size = 0; };	// êîíñòðóêòîð, îáíóëÿåò íà÷åíèå size
-	~Queue() { clear(); };	// äåñòðóêòîð
-	void push(int, int);	// äîáàâëåíèå ýëåìåíòà î÷åðåäè
-	void pop();				// èçâëå÷åíèå ýëåìåíòà î÷åðåäè
-	void clear();			// î÷èùåíèå î÷åðåäè
-	int find_proc(int);
-	int find_mem(int);
-	int isEmpty() { if (size == 0) return 1; else return 0; }
-
-	int getSize() { return this->size; };
-	Element* getEnd() { return this->end; };
-	int getFirst() {
-		Element* e = end;						// óñòàíîâêà óêàçàòåëÿ e íà êîíåö î÷åðåäè end
-		int first;
-		for (int i = 0; i < size - 1; i++) {	// åñëè â î÷åðåäè áîëüøå 1 ýëåìåíòà
-			e = e->prev;						// ïåðåìåííîé å ïåðåäàåòñÿ çíà÷åíèå ïðåäûäóùåãî óêàçàòåëÿ, äâèæåíèå ïî î÷åðåäè
-		}
-		if (e != NULL) { first = e->proc; return first; }
-		else return -1;
-	}
-	int getMem() {
-		Element* e = end;		// óñòàíîâêà óêàçàòåëÿ e íà êîíåö î÷åðåäè end
-		int _mem;
-		for (int i = 0; i < size - 1; i++) {	// åñëè â î÷åðåäè áîëüøå 1 ýëåìåíòà
-			e = e->prev;						// ïåðåìåííîé å ïåðåäàåòñÿ çíà÷åíèå ïðåäûäóùåãî óêàçàòåëÿ, äâèæåíèå ïî î÷åðåäè
-		}
-		_mem = e->mem;
-		return _mem;
-	}
-};
-
-void Queue::push(int _proc, int _mem) {
-
-	Element* e = new Element;	// îáúÿâëåíèå óêàçàòåëÿ äëÿ íîâîãî ýëåìåíòa òèïà Element
-	e->proc = _proc;
-	e->mem = _mem;				// â ïàìÿòü ïî óêàçàòåëþ êëàäåì íîâîå çíà÷åíèå
-	e->prev = NULL;				// çàïèñûâàåòñÿ íóëåâîé óêàçàòåëü
-	if (size > 0) {
-		e->prev = end;			// ïîñëåäíèé ýëåìåíò î÷åðåäè ñòàíîâèòñÿ ïðåäïîñëäíèì, òê ó íàñ ïîÿâèëñÿ íîâûé ýëåìåíò, êîòîðûé ñòàë ïîñëåäíèì
-	}
-	end = e;					// óêàçàòåëü íà êîíåö î÷åðåäè íà÷èíàåò óêàçûâàòü íà ýëåìåíò å, òê îí òåïåðü ïîñëåäíèé
-	this->size++;				// óâåëè÷åíèå ðàçìåðà î÷åðåäè
-}
-void Queue::pop() {
-	Element* e = end;		// óñòàíîâêà óêàçàòåëÿ e íà êîíåö î÷åðåäè end
-	if (this->size == 0) {	// åñëè íåò ýëåìåíòîâ â î÷åðåäè
-		cout << "none" << endl;
-	}
-	else {
-		if (this->size == 1) {	// åñëè îäèí ýëåìåíò
-			this->size--;		// óìåíüøåíèå ðàçìåðà î÷åðåäè
-			delete end;			// óäàëåíèå óêàçàòåëÿ íà êîíåö î÷åðåäè
-		}
-		else {
-			for (int i = 0; i < size - 2; i++) {	// åñëè â î÷åðåäè áîëüøå 1 ýëåìåíòà
-				e = e->prev;						// ïåðåìåííîé å ïåðåäàåòñÿ çíà÷åíèå ïðåäûäóùåãî óêàçàòåëÿ, äâèæåíèå ïî î÷åðåäè
-			}
-			delete e->prev;			// óäàëåíèå ãîëîâû
-			this->size--;			// óìåíüøåíèå ðàçìåðà î÷åðåäè
-		}
-	}
-}
-void Queue::clear() {				// ïðîñìîòð ýëåìåíòîâ ñ õâîñòà äî ãîëîâû, óäàëåíèå ýëåìåíòîâ îò ãîëîâû ïî ïîðÿäêó	
-	Element* e = end;				// óñòàíîâêà óêàçàòåëÿ íà êîíåö î÷åðåäè
-	for (int i = 0; i < size; i++) {	//î÷åðåäü íå ïóñòàÿ
-		e = end;					// óêàçàòåëü íà êîíåö î÷åðåäè
-		for (int j = 0; j < size - i - 1; j++) {
-			e = e->prev;			// ïðîñìîòð ýëåìåíòîâ ñ êîíöà î÷åðåäè äî íà÷àëà
-		}
-		delete e;					// óäàëåíèå ýëåìåíòà î÷åðåäè
-	}
-	size = 0;
-	end = NULL;
-}
-int Queue::find_proc(int find) {
-	Element* e = end;						// óñòàíîâêà óêàçàòåëÿ e íà êîíåö î÷åðåäè end
-	for (int i = 0; i < size - 1; i++) {	// åñëè â î÷åðåäè áîëüøå 1 ýëåìåíòà
-		if (e->proc == find) 
-			return 1;
-		else
-			e = e->prev;					// ïåðåìåííîé å ïåðåäàåòñÿ çíà÷åíèå ïðåäûäóùåãî óêàçàòåëÿ, äâèæåíèå ïî î÷åðåäè
-	}
-	return 0;
-}
-int Queue::find_mem(int find) {
-	Element* e = end;						// óñòàíîâêà óêàçàòåëÿ e íà êîíåö î÷åðåäè end
-	for (int i = 0; i < size - 1; i++) {	// åñëè â î÷åðåäè áîëüøå 1 ýëåìåíòà
-		if (e->proc == find) return e->mem;
-		else
-			e = e->prev;					// ïåðåìåííîé å ïåðåäàåòñÿ çíà÷åíèå ïðåäûäóùåãî óêàçàòåëÿ, äâèæåíèå ïî î÷åðåäè
-	}
-	return -1;
-}
+//struct Element {
+//	int proc;				// ïðîöåññîð
+//	int mem;				// ïàìÿòü
+//	Element* prev;		// óêàçàòåëü íà ïðåäûäóùèé ýëåìåíò
+//};
+//class Queue {
+//private:
+//	int size;			// êîë-âî ýëåìåíòîâ â î÷åðåäè 
+//	Element* end;		// óêàçàòåëü íà êîíåö î÷åðåäè
+//
+//public:
+//	Queue() { size = 0; };	// êîíñòðóêòîð, îáíóëÿåò íà÷åíèå size
+//	~Queue() { clear(); };	// äåñòðóêòîð
+//	void push(int, int);	// äîáàâëåíèå ýëåìåíòà î÷åðåäè
+//	void pop();				// èçâëå÷åíèå ýëåìåíòà î÷åðåäè
+//	void clear();			// î÷èùåíèå î÷åðåäè
+//	int find_proc(int);
+//	int find_mem(int);
+//	int isEmpty() { if (size == 0) return 1; else return 0; }
+//
+//	int getSize() { return this->size; };
+//	Element* getEnd() { return this->end; };
+//	int getFirst() {
+//		Element* e = end;
+//		int first;
+//		for (int i = 0; i < size - 1; i++) { e = e->prev; }
+//		if (e != NULL) { first = e->proc; return first; }
+//		else return -1;
+//	}
+//	int getMem() {
+//		Element* e = end;
+//		int _mem;
+//		for (int i = 0; i < size - 1; i++) { e = e->prev; }
+//		_mem = e->mem;
+//		return _mem;
+//	}
+//};
+//
+//void Queue::push(int _proc, int _mem) {
+//
+//	Element* e = new Element;
+//	e->proc = _proc;
+//	e->mem = _mem;
+//	e->prev = NULL;
+//	if (size > 0) { e->prev = end; }
+//	end = e;
+//	this->size++;
+//}
+//void Queue::pop() {
+//	Element* e = end;
+//	if (this->size == 0) { cout << "none" << endl; }
+//	else {
+//		if (this->size == 1) { this->size--; delete end; }
+//		else {
+//			for (int i = 0; i < size - 2; i++) { e = e->prev; }
+//			delete e->prev;	
+//			this->size--;	
+//		}
+//	}
+//}
+//void Queue::clear() {
+//	Element* e = end;
+//	for (int i = 0; i < size; i++) {
+//		e = end;
+//		for (int j = 0; j < size - i - 1; j++) { e = e->prev; }
+//		delete e;
+//	}
+//	size = 0;
+//	end = NULL;
+//}
+//int Queue::find_proc(int find) {
+//	Element* e = end;
+//	for (int i = 0; i < size - 1; i++) {
+//		if (e->proc == find) return 1;
+//		else e = e->prev;
+//	}
+//	return 0;
+//}
+//int Queue::find_mem(int find) {
+//	Element* e = end;
+//	for (int i = 0; i < size /*- 1*/; i++) {
+//		if (e->proc == find) return e->mem;
+//		else e = e->prev;
+//	}
+//	return 0;
+//	//return -1;
+//}
 
 string in(string str) {
 	do {
@@ -310,6 +296,9 @@ int main() {
 		cout << endl;
 	}
 	cout << endl << endl;
+
+	//âûâîä â âèäå äèàãðàììû
+
 	cout << "<- Ðàñòÿíèòå îêíî ->" << endl << endl;
 
 	cout.width(8);

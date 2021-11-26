@@ -3,105 +3,107 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
+
+#include "Queue.h"
+
 #define N 3
 using namespace std;
 
 //struct States {
 //	//процессор
-//	string pr_reg = "__/РЕГ\\_";      //работа с регистром
+//	string pr_reg = "_/ РГ \\_";      //работа с регистром
 //	string pr_wait = "_[ожП0]_";    //начало ожидания
 //	string pr_memory = "_/ПАМ0\\_";    //начало работы с памятью
-//	// шина
-//	string bus_none = "________";     //ничего
-//	string bus_memory = "_/П0П0\\_";   //начало работы с памятью
+//	// коммутатор
+//	string sw_none = "________";     //ничего
+//	string sw_memory = "_/П0П0\\_";   //начало работы с памятью
 //} st;
-struct Element {
-	int proc;				// процессор
-	int mem;				// память
-	Element* prev;		// указатель на предыдущий элемент
-};
-class Queue {
-private:
-	int size;			// кол-во элементов в очереди 
-	Element* end;		// указатель на конец очереди
-
-public:
-	Queue() { size = 0; };	// конструктор, обнуляет начение size
-	~Queue() { clear(); };	// деструктор
-	void push(int, int);	// добавление элемента очереди
-	void pop();				// извлечение элемента очереди
-	void clear();			// очищение очереди
-	int find_proc(int);
-	int find_mem(int);
-	int isEmpty() { if (size == 0) return 1; else return 0; }
-
-	int getSize() { return this->size; };
-	Element* getEnd() { return this->end; };
-	int getFirst() {
-		Element* e = end;						
-		int first;
-		for (int i = 0; i < size - 1; i++) { e = e->prev; }
-		if (e != NULL) { first = e->proc; return first; }
-		else return 0;
-	}
-	int getMem() {
-		Element* e = end;		
-		int _mem;
-		for (int i = 0; i < size - 1; i++) { e = e->prev; }
-		_mem = e->mem;
-		return _mem;
-	}
-};
-
-void Queue::push(int _proc, int _mem) {
-
-	Element* e = new Element;	
-	e->proc = _proc;
-	e->mem = _mem;				
-	e->prev = NULL;				
-	if (size > 0) { e->prev = end; }
-	end = e;					
-	this->size++;				
-}
-void Queue::pop() {
-	Element* e = end;		
-	if (this->size == 0) { cout << "none" << endl;
-	}
-	else {
-		if (this->size == 1) { this->size--; delete end; }
-		else {
-			for (int i = 0; i < size - 2; i++) { e = e->prev; }
-			delete e->prev;			
-			this->size--;			
-		}
-	}
-}
-void Queue::clear() {				
-	Element* e = end;				
-	for (int i = 0; i < size; i++) {	
-		e = end;					
-		for (int j = 0; j < size - i - 1; j++) { e = e->prev; }
-		delete e;					
-	}
-	size = 0;
-	end = NULL;
-}
-int Queue::find_proc(int find) {
-	Element* e = end;						
-	for (int i = 0; i < size - 1; i++) {
-		if (e->proc == find) return 1;
-		else e = e->prev;
-	}
-	return 0;
-}
-int Queue::find_mem(int find) {
-	Element* e = end;						
-	for (int i = 0; i < size /*- 1*/; i++) {	
-		if (e->proc == find) return e->mem;
-		else e = e->prev;					
-	}
-	return 0;
-}
+//struct Element {
+//	int proc;				// процессор
+//	int mem;				// память
+//	Element* prev;		// указатель на предыдущий элемент
+//};
+//class Queue {
+//private:
+//	int size;			// кол-во элементов в очереди 
+//	Element* end;		// указатель на конец очереди
+//
+//public:
+//	Queue() { size = 0; };	// конструктор, обнуляет начение size
+//	~Queue() { clear(); };	// деструктор
+//	void push(int, int);	// добавление элемента очереди
+//	void pop();				// извлечение элемента очереди
+//	void clear();			// очищение очереди
+//	int find_proc(int);
+//	int find_mem(int);
+//	int isEmpty() { if (size == 0) return 1; else return 0; }
+//
+//	int getSize() { return this->size; };
+//	Element* getEnd() { return this->end; };
+//	int getFirst() {
+//		Element* e = end;						
+//		int first;
+//		for (int i = 0; i < size - 1; i++) { e = e->prev; }
+//		if (e != NULL) { first = e->proc; return first; }
+//		else return 0;
+//	}
+//	int getMem() {
+//		Element* e = end;		
+//		int _mem;
+//		for (int i = 0; i < size - 1; i++) { e = e->prev; }
+//		_mem = e->mem;
+//		return _mem;
+//	}
+//};
+//
+//void Queue::push(int _proc, int _mem) {
+//
+//	Element* e = new Element;	
+//	e->proc = _proc;
+//	e->mem = _mem;				
+//	e->prev = NULL;				
+//	if (size > 0) { e->prev = end; }
+//	end = e;					
+//	this->size++;				
+//}
+//void Queue::pop() {
+//	Element* e = end;		
+//	if (this->size == 0) { cout << "none" << endl; }
+//	else {
+//		if (this->size == 1) { this->size--; delete end; }
+//		else {
+//			for (int i = 0; i < size - 2; i++) { e = e->prev; }
+//			delete e->prev;			
+//			this->size--;			
+//		}
+//	}
+//}
+//void Queue::clear() {				
+//	Element* e = end;				
+//	for (int i = 0; i < size; i++) {	
+//		e = end;					
+//		for (int j = 0; j < size - i - 1; j++) { e = e->prev; }
+//		delete e;					
+//	}
+//	size = 0;
+//	end = NULL;
+//}
+//int Queue::find_proc(int find) {
+//	Element* e = end;						
+//	for (int i = 0; i < size - 1; i++) {
+//		if (e->proc == find) return 1;
+//		else e = e->prev;
+//	}
+//	return 0;
+//}
+//int Queue::find_mem(int find) {
+//	Element* e = end;						
+//	for (int i = 0; i < size /*- 1*/; i++) {	
+//		if (e->proc == find) return e->mem;
+//		else e = e->prev;					
+//	}
+//	return 0;
+//}
 
 string in(string str) {
 	do {
@@ -170,7 +172,7 @@ int main() {
 	//status[1][0] = "ПР1";
 	//status[2][0] = "ПР2";
 	//status[3][0] = "ПР3";
-	//status[4][0] = "ШИНА";
+	//status[4][0] = "КОММУТАТОР";
 
 	cout << endl;
 	cout.width(8);
@@ -201,34 +203,43 @@ int main() {
 			if (((numb == q_switch[1].getFirst())&& (q_switch[1].find_mem(numb)!=0)) ||((numb == q_switch[2].getFirst())&& (q_switch[2].find_mem(numb)!=0)) ||((numb == q_switch[3].getFirst())&& (q_switch[3].find_mem(numb)!=0))) {
 
 				str += "ПАМ";
-				if ((numb == q_switch[1].getFirst()) && (q_switch[1].find_mem(numb) != 0)) {
-					str += to_string(q_switch[1].find_mem(numb));
-					//str += to_string(q_switch[1].getFirst());
-					//str += to_string(1); 
-				}
-				else {
-					if ((numb == q_switch[2].getFirst()) && (q_switch[2].find_mem(numb) != 0)) {
-						str += to_string(q_switch[2].find_mem(numb));
-						//str += to_string(q_switch[2].getFirst());
-						//str += to_string(2);
-					}
-					else
-						if ((numb == q_switch[3].getFirst()) && (q_switch[3].find_mem(numb) != 0)) {
-							str += to_string(q_switch[3].find_mem(numb));
-							//str += to_string(q_switch[3].getFirst());
-							//str += to_string(3);
-						}
-				}
 
-				//str = st.pr_memory;
-				//str[5] = q_bus.getMem() + 48;
-				//status[numb][T] = str;
-				//str.clear();
+				for (int i = 1; i < N + 1; i++) {
+					if (numb == q_switch[i].getFirst()) { mem = i; break; }
+				} 
+				str += to_string(q_switch[mem].getMem());
+
+				//if ((numb == q_switch[1].getFirst()) /*&& (q_switch[1].find_mem(numb) != 0)*/) {
+				//	//str += to_string(q_switch[1].find_mem(numb));
+				//	str += to_string(q_switch[1].getMem());
+				//	//str += to_string(q_switch[1].getFirst());
+				//	//str += to_string(1); 
+				//}
+				//else {
+				//	if ((numb == q_switch[2].getFirst()) /*&& (q_switch[2].find_mem(numb) != 0)*/) {
+				//		//str += to_string(q_switch[2].find_mem(numb));
+				//		str += to_string(q_switch[2].getMem());
+				//		//str += to_string(q_switch[2].getFirst());
+				//		//str += to_string(2);
+				//	}
+				//	else
+				//		if ((numb == q_switch[3].getFirst()) /*&& (q_switch[3].find_mem(numb) != 0)*/) {
+				//			//str += to_string(q_switch[3].find_mem(numb));
+				//			str += to_string(q_switch[3].getMem());
+				//			//str += to_string(q_switch[3].getFirst());
+				//			//str += to_string(3);
+				//		}
+				//}
 
 				str += "  ";
 				cout.width(8); cout << str; str.clear();
 
-				//str = st.bus_memory;
+				//str = st.pr_memory;
+				//str[5] = q_switch[mem].getMem() + 48;
+				//status[numb][T] = str;
+				//str.clear();
+				
+				//str = st.sw_memory;
 				//str[3] = numb + 48;
 				//str[5] = q_bus.getMem() + 48;
 				//status[4][T] = str;
@@ -239,20 +250,26 @@ int main() {
 					
 					str += "ОЖ";
 
-					if (q_switch[1].find_mem(numb) > 0) {
-						str += to_string(1); }
-					else if (q_switch[2].find_mem(numb) > 0) {
-						str += to_string(2); }
-					else if (q_switch[3].find_mem(numb) > 0) {
-						str += to_string(3); }
+					for (int i = 1; i < N + 1; i++) {
+						if (q_switch[i].find_mem(numb) > 0) { mem = i; break; }
+					}
+					str += to_string(mem);
 
-					//str = st.pr_wait;
-					//str[5] = q_bus.find_mem(numb) + 48;
-					//status[numb][T] = str;
-					//str.clear();
+					//if (q_switch[1].find_mem(numb) > 0) {
+					//	str += to_string(1); }
+					//else if (q_switch[2].find_mem(numb) > 0) {
+					//	str += to_string(2); }
+					//else if (q_switch[3].find_mem(numb) > 0) {
+					//	str += to_string(3); }
 
 					str += "  ";
 					cout.width(8); cout << str; str.clear();
+
+					//str = st.pr_wait;
+					//str[5] = q_switch[mem].find_mem(numb) + 48;
+					//status[numb][T] = str;
+					//str.clear();
+
 				}
 				else {
 					K = (rand() % 100 + 1);
@@ -277,15 +294,15 @@ int main() {
 							for (int i = 0; i < M; i++) { q_switch[mem].push(numb, mem); }
 
 							//str = st.pr_memory;
-							//str[5] = q_bus.find_mem(numb) + 48;
+							//str[5] = q_switch[mem].find_mem(numb) + 48;
 							//status[numb][T] = str;
 							//str.clear();
 
-							//str = st.bus_memory;
-							//str[3] = numb + 48;
-							//str[5] = q_bus.find_mem(numb) + 48;
-							//status[4][T] = str;
-							//str.clear();
+							/*str = st.sw_memory;
+							str[3] = numb + 48;
+							str[5] = q_switch[mem].find_mem(numb) + 48;
+							status[4][T] = str;
+							str.clear();*/
 
 							str += "ПАМ";
 							str += to_string(q_switch[mem].find_mem(numb));
@@ -298,9 +315,15 @@ int main() {
 							for (int i = 0; i < M; i++) { q_switch[mem].push(numb, mem); }
 
 							//str = st.pr_wait;
-							//str[5] = q_bus.find_mem(numb) + 48;
+							//str[5] = q_switch[mem].find_mem(numb) + 48;
 							//status[numb][T] = str;
 							//str.clear();
+
+							/*str = st.sw_memory;
+							str[3] = numb + 48;
+							str[5] = q_switch[mem].find_mem(numb) + 48;
+							status[4][T] = str;
+							str.clear();*/
 
 							str += "ОЖ";
 							str += to_string(q_switch[mem].find_mem(numb));
@@ -314,28 +337,28 @@ int main() {
 		for (int i = 1; i < N + 1; i++) {
 			if (!q_switch[i].isEmpty()) q_switch[i].pop();
 		}
-	//	if (status[4][T].empty()) {
-	//		status[4][T] = st.bus_none;
-	//		str.clear();
-	//	}
-	//	cout << endl;
-	//}
-	//cout << endl << endl;
-	//cout << "<- Растяните окно ->" << endl << endl;
+		/*if (status[4][T].empty()) {
+			status[4][T] = st.sw_none;
+			str.clear();
+		}*/
+		cout << endl;
+	}
+	cout << endl << endl;
+	/*cout << "<- Растяните окно ->" << endl << endl;
 
-	//cout.width(8);
-	//cout << status[0][0] << " | ";
-	//for (int j = 1; j < T; j++) { cout.width(7); cout << status[0][j] << "|"; }
+	cout.width(11);
+	cout << status[0][0] << " | ";
+	for (int j = 1; j < T; j++) { cout.width(7); cout << status[0][j] << "|"; }
 	cout << endl;
 
-	//for (int j = 1; j < ((T - 1) * 8) + 11; j++) { cout << "—"; }
-	//cout << endl << endl;
+	for (int j = 1; j < ((T - 1) * 8) + 14; j++) { cout << "—"; }
+	cout << endl << endl;
 
-	//for (int i = 1; i < 5; i++) {
-	//	cout.width(8);
-	//	cout << status[i][0] << " | ";
-	//	for (int j = 1; j < T; j++) { cout.width(8);	cout << status[i][j]; }
-		//cout << endl << endl;
-	}
+	for (int i = 1; i < 4; i++) {
+		cout.width(11);
+		cout << status[i][0] << " | ";
+		for (int j = 1; j < T; j++) { cout.width(8);cout << status[i][j]; }
+		cout << endl << endl;
+	}*/
 	return 0;
 }
