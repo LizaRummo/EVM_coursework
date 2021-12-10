@@ -12,11 +12,11 @@ using namespace std;
 struct States {
 	//процессор
 	string pr_reg = "__/РЕГ\\_";      //работа с регистром
-	string pr_wait = "_[ожП0]_";    //начало ожидания
-	string pr_memory = "_/ПАМ0\\_";    //начало работы с памятью
+	string pr_wait = "_[ожП0]_";    //ожидание
+	string pr_memory = "_/ПАМ0\\_";    //работа с памятью
 	// шина
 	string bus_none = "________";     //ничего
-	string bus_memory = "_/П0П0\\_";   //начало работы с памятью
+	string bus_memory = "_/П0П0\\_";   //работа с памятью
 } st;
 
 string in(string str) {
@@ -64,19 +64,19 @@ int main() {
 	int T = -1;			//счётчик тактов
 	int T_stop = -1;	//последний такт работы
 	int T_free = -1;
-	int Pn = 100;		//вероятность обращения к соответсвующему блоку памяти
+	int Pn = 100;		//вероятность обращения к соответствующему  блоку памяти
 	int Kr = 100;		//вероятность обращения к регистрам
 	int M;				//время доступа к памяти
 	string str = "";
 
 	cout << "Кол-во процессоров и блоков памяти N = " << N << endl;
-	cout << "Время обращения к памяти M = ";
+	cout << "Время обращения к памяти M [2,5,10] = ";
 	str = in(str);
 	M = stoi(checkNumber(str));
-	cout << "Pn = ";
+	cout << "Pn [80, 60] = ";
 	str = in(str);
 	Pn = stoi(checkNumber(str));
-	cout << "Kr = ";
+	cout << "Kr [85, 75, 65] = ";
 	str = in(str);
 	Kr = stoi(checkNumber(str));
 	cout << "Задайте количество тактов для работы T_stop = ";

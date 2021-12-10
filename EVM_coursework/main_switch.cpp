@@ -59,11 +59,11 @@ int main() {
 	string str = "";
 
 	cout << "Кол-во процессоров и блоков памяти N = " << N << endl;
-	cout << "Время обращения к памяти M = ";
+	cout << "Время обращения к памяти M [2,5,10] = ";
 	str = in(str); M = stoi(checkNumber(str));
-	cout << "Pn = ";
+	cout << "Pn [80, 60] = ";
 	str = in(str); Pn = stoi(checkNumber(str));
-	cout << "Kr = ";
+	cout << "Kr [85, 75, 65] = ";
 	str = in(str); Kr = stoi(checkNumber(str));
 	cout << "Задайте количество тактов для работы T_stop = ";
 	str = in(str); T_stop = stoi(checkNumber(str));
